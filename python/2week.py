@@ -202,3 +202,102 @@ d['low']=[10,20,30]
 d['high'][1]=500
 print(e)
 print(f)
+
+# Quiz 4 사전{‘one’:1, ‘two’:2, ‘three’:3, ‘four’:4, ‘five’:5}이 주어져 있을 때, 키의 알파벳을 기준으로 순서대로 
+# (키,값)쌍을 출력하라. 또 반대로 값을 중심으로 작은 값부터 큰 값 순서대로 (키,값) 쌍을 출력하라. 
+
+d={'one':1, 'two':2, 'three':3, 'four':4, 'five':5}
+print(sorted(d.items()))
+print(sorted(d.items(), key=lambda x: x[1]))
+print(sorted(d.items(), key=lambda x: -x[1]))
+
+
+# Quiz 5 다음과 같은 두 개의 리스트가 주어져 있다.
+# [‘one’, ‘two’, ‘three’, ‘four’, ‘five’], [1,2,3,4].
+# 이들로터 {‘one’:1, ‘two’:2, ‘three’:3, ‘four’:4, ‘five’:5} 사전을 만들어내라
+
+list1=['one', 'two', 'three', 'four', 'five']
+list2=[1,2,3,4,5]
+result={}
+for i in range(len(list1)):
+    result[list1[i]]=list2[i]
+print(result)
+
+# Quiz 6 어떤 문자열(예 : s=‘one two one two three four’)이 주어져 있을 때, 
+# 사전을 이용하여 주어진 문자열의 각 단어를 중복되지 않게 한번씩만 출력하여라.
+
+s='one two one two three four'
+words=s.split(' ')
+result={}
+for word in words:
+    if word not in result:
+        result[word]=''
+print(result.keys())
+
+# Quiz 7 다음 주어진 문자열에서 모든 대문자를 소문자로 변환하고, 
+# 문자‘,’와’.’를 없앤 후에 각 단어를 순서대로 출력하시오. 
+# 단, 중복적인 한 단어는 한번만 출력되어야 하면 단어가 문자열에서 
+# 발생한 횟수도 함께 출력한다.
+s='We propose to start by making it possible to teach programming in Python, an existing scripting language, and to focus on creating a new development environment and teaching materials for it.'
+s=s.lower()
+s=s.replace(',', '')
+s=s.replace('.', '')
+words=s.split(' ')
+result={}
+for word in words:
+    if word not in result:
+        result[word]=words.count(word)
+print(result.items())
+
+# Quiz 8 문자열의 ‘a’,’b’,’c’,’d’ 각 문자에 대해서 ‘w’,’x’,’y’,’z’으로 또한 
+# ‘w’,’x’,’y’,’z’는 ‘a’,’b’,’c’,’d’로 변환하는 프로그램을 작성하라. 
+# 예를 들면 ‘cabsz’는 ‘ywxsd’로 변환된다.
+
+s='cabsz'
+result=''
+for i in range(len(s)):
+    if s[i]=='a':
+        result+='w'
+    elif s[i]=='b':
+        result+='x'
+    elif s[i]=='c':
+        result+='y'
+    elif s[i]=='d':
+        result+='z'
+    else:
+        result+=s[i]
+print(result)
+
+#  9강 파일
+# Quiz 1 텍스트 파일을 읽어서 각 라인에 있는 공백으로 분리된 단어의 
+# 수를 세는 프로그램을 작성하라. 단, 라인의 첫 문자가 #으로 
+# 시작하면 주석문으로 처리하지 않고 넘어간다.
+
+
+# Quiz 2 다음 코드로 출력될 내용을 파일 number.txt에 출력하시오. 
+# (write 혹은 writelines 이용)
+for k in range(10):
+	print (k)
+
+# Quiz 3 파일 s.txt에 있는 라인들을 정렬해서 출력하시오. 파일 s.txt의 내용은 다음과 같다.
+# pig ham
+# cat dog
+# ham bird
+# dog pig
+# 정렬 후 결과는 다음과 같다.
+# cat dog
+# dog pig
+# ham bird
+# pig ham
+
+# Quiz 4 문제 3번의 파일을 두 번째 단어를 기준으로 정렬하여라. 결과는 다음과 같아야 한다. 
+# ham bird
+# cat dog
+# pig ham
+# dog pig
+
+
+# Quiz 5 문제 3번의 파일을 읽고 한 줄에 3개의 단어가 오도록 출력하여라. 결과는 다음과 같아야 한다.
+# dog ham bird
+# pig ham cat
+# dog pig
