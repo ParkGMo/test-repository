@@ -272,12 +272,36 @@ print(result)
 # Quiz 1 텍스트 파일을 읽어서 각 라인에 있는 공백으로 분리된 단어의 
 # 수를 세는 프로그램을 작성하라. 단, 라인의 첫 문자가 #으로 
 # 시작하면 주석문으로 처리하지 않고 넘어간다.
+sample = """
+# This is a comment
+pig ham
+cat dog ham bird
+# Another comment
+dog pig ham bird"""
+
+with open("a.txt", "w") as f:
+    f.write(sample)
+
+for line in open("a.txt", "r"):
+    if line.startswith("#"):
+        continue
+    word = line.split() 
+    wordNum=len(word)
+    print (wordNum)
+
+
 
 
 # Quiz 2 다음 코드로 출력될 내용을 파일 number.txt에 출력하시오. 
 # (write 혹은 writelines 이용)
-for k in range(10):
-	print (k)
+# for k in range(10):
+# 	print (k)
+
+with open("number.txt", "w") as f:
+    for k in range(10):
+        print(k)
+        # f.write(f"{k}\n")
+
 
 # Quiz 3 파일 s.txt에 있는 라인들을 정렬해서 출력하시오. 파일 s.txt의 내용은 다음과 같다.
 # pig ham
@@ -289,6 +313,21 @@ for k in range(10):
 # dog pig
 # ham bird
 # pig ham
+s = """pig ham
+cat dog
+ham bird
+dog pig
+""" 
+with open("s.txt", "w") as f:
+    f.write(s)
+
+with open('s.txt', 'r') as f:
+            lines = f.readlines()
+sortLines = sorted(lines)
+for line in sortLines:
+            print(line.strip())  # 줄바꿈 제거하여 출력
+
+
 
 # Quiz 4 문제 3번의 파일을 두 번째 단어를 기준으로 정렬하여라. 결과는 다음과 같아야 한다. 
 # ham bird
@@ -296,8 +335,35 @@ for k in range(10):
 # pig ham
 # dog pig
 
+s = """pig ham
+cat dog
+ham bird
+dog pig
+"""
+
+with open("s.txt", "w") as f:
+    f.write(s)
+lines = s.strip().split('\n')  
+sortedLines = sorted(lines, key=lambda line: line.split()[1])  
+result = '\n'.join(sortedLines)
+print(result)
+         
+
 
 # Quiz 5 문제 3번의 파일을 읽고 한 줄에 3개의 단어가 오도록 출력하여라. 결과는 다음과 같아야 한다.
 # dog ham bird
 # pig ham cat
 # dog pig
+
+s = """pig ham
+cat dog
+ham bird
+dog pig
+"""
+
+words = s.split()  
+result = []
+for i in range(0, len(words), 3):
+    result.append(' '.join(words[i:i+3]))
+formatted_result = '\n'.join(result)
+print(formatted_result)
