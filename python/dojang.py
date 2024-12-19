@@ -164,3 +164,168 @@ while i <= 32 and j >= 1:
 # 8 3
 # 16 2
 # 32 1
+
+# 18.5 연습문제: 3으로 끝나는 숫자만 출력하기
+# 다음 소스 코드를 완성하여 0과 73 사이의 숫자 중 3으로 끝나는 숫자만 출력되게 만드세요.
+i = 0
+while True:
+    if i % 10 != 3:
+        i += 1
+        continue
+    if i > 73:
+        break
+    print(i, end=' ')
+    i += 1
+# 결과 3 13 23 33 43 53 63 73
+
+# 19.5 연습문제: 역삼각형 모양으로 별 출력하기
+# 다음 소스 코드를 완성하여 역삼각형 모양으로 별이 출력되게 만드세요.
+for i in range(5):
+    for j in range(5):
+        if j >= i:
+            print('*', end='')
+        else:
+            print(' ', end='')
+    print("")
+# 결과 
+# *****
+#  ****
+#   ***
+#    **
+#     *
+
+# 20.7 연습문제: 2과 11의 배수, 공배수 처리하기
+# 다음 소스 코드를 완성하여 1부터 100까지의 숫자를 출력하면서 
+# 2의 배수일 때는 'Fizz', 11의 배수일 때는 'Buzz', 2과 11의 공배수일 
+# 때는 'FizzBuzz'가 출력되게 만드세요.
+
+for i in range(1, 101):
+    if i%2==0 and i%11==0:
+        print('FizzBuzz')
+    elif i%2==0:
+        print('Fizz')
+    elif 1%11==0:
+        print('Buzz')
+    else:
+        print(i)
+
+# 결과 
+# 1
+# Fizz
+# 3
+# ... (생략)
+# FizzBuzz
+# 89
+# Fizz
+# 91
+# Fizz
+# 93
+# Fizz
+# 95
+# Fizz
+# 97
+# Fizz
+# Buzz
+# Fizz
+
+# 21.5 연습문제: 오각별 그리기
+# 다음 소스 코드를 완성하여 오각별이 그려지게 만드세요.
+
+# 각 변의 길이는 100
+# 별의 꼭지점은 72도를 두 번 회전해서 144도 회전
+# 별의 다음 꼭지점을 그릴 때는 72도 회전
+
+import turtle as t
+ 
+n = 5
+t.shape('turtle')
+for i in range(n):
+    t.forward(100)
+    t.right(144)
+    t.forward(100)
+    t.left(72)
+
+# 결과 ⭐모양으로 거북이 이동시키기기
+
+# 22.9 연습문제: 리스트에서 특정 요소만 뽑아내기
+# 다음 소스 코드를 완성하여 리스트 a에 들어있는 
+# 문자열 중에서 길이가 5인 것들만 리스트 형태로 출력되게 만드세요(리스트 표현식 사용).
+a = ['alpha', 'bravo', 'charlie', 'delta', 'echo', 'foxtrot', 'golf', 'hotel', 'india']
+b = []
+
+for word in a:
+    if len(word) == 5:
+        b.append(word)
+ 
+print(b)
+
+# 결과 ['alpha', 'bravo', 'delta', 'hotel', 'india']
+
+# 23.6 연습문제: 3차원 리스트 만들기
+# 다음 소스 코드를 완성하여 높이 2, 세로 크기 4, 가로 크기 3인 3차원 리스트를 만드세요(리스트 표현식 사용).
+a=[]
+
+for i in range(2):
+    a.append([])
+    for j in range(4):
+        a[i].append([])
+        for k in range(3):
+            a[i][j].append(0)
+print(a)
+
+# 결과 [[[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]], [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]]
+
+# 24.4 연습문제: 파일 경로에서 파일명만 가져오기
+# 다음 소스 코드를 완성하여 파일 경로에서 파일명만 출력되게 만드세요. 
+# 단, 경로에서 폴더의 깊이가 달라지더라도 파일명만 출력할 수 있어야 합니다.
+path = 'C:\\Users\\user\\OneDrive - 씨더스 농업회사법인\\바탕 화면\\GM_repository\\test-repository\\text memo.txt'
+a=path.split('\\')
+filename = a[-1]
+print(filename)
+
+# 결과 text memo.txt
+
+# 25.7 연습문제: 평균 점수 구하기
+# 다음 소스 코드를 완성하여 평균 점수가 출력되게 만드세요.
+maria = {'korean': 94, 'english': 91, 'mathematics': 89, 'science': 83}
+average = sum(maria.values()) / len(maria)
+ 
+print(average)
+# 결과 89.25
+
+# 26.8 연습문제: 공배수 구하기
+# 다음 소스 코드를 완성하여 1부터 100까지 숫자 중 3과 5의 공배수를 세트 형태로 출력되게 만드세요.
+a = {i for i in range(1, 101) if i % 3 == 0}
+b = {i for i in range(1, 101) if i % 5 == 0}
+ 
+print(a & b)
+
+# 결과 {75, 45, 15, 90, 60, 30}
+
+# 27.5 연습문제: 파일에서 10자 이하인 단어 개수 세기
+# 단어가 줄 단위로 저장된 words.txt 파일이 주어집니다. 다음 소스 코드를 완성하여 10자 이하인 단어의 개수가 출력되게 만드세요.
+
+# anonymously
+# compatibility
+# dashboard
+# experience
+# photography
+# spotlight
+# warehouse
+
+with open('words.txt', 'r') as file:
+    words = file.read().splitlines()
+    count = sum(1 for word in words if len(word) <= 10)
+print(count)
+
+# 결과 4
+
+# 32.4 연습문제: 이미지 파일만 가져오기
+# 다음 소스 코드를 완성하여 확장자가 .jpg, .png인 이미지 파일만 출력되게 만드세요. 
+# 여기서는 람다 표현식을 사용해야 하며 출력 결과는 리스트 형태라야 합니다. 
+# 람다 표현식에서 확장자를 검사할 때는 문자열 메서드를 활용하세요.
+files = ['font', '1.png', '10.jpg', '11.gif', '2.jpg', '3.png', 'table.xslx', 'spec.docx']
+print(files)
+imageFile = filter(lambda x: x.find('.jpg')!= -1 or x.find('.png')!= -1, files)
+print(list(imageFile))
+# 결과 ['1.png', '10.jpg', '2.jpg', '3.png']
