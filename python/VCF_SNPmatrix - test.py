@@ -64,33 +64,33 @@
 # genotype_mat = genotypes.compute()
 
 # pandas_plink.read_plink(https://pandas-plink.readthedocs.io/en/latest/api/pandas_plink.read_plink.html)
-from os.path import join
-from pandas_plink import read_plink
-from pandas_plink import get_data_folder
-(bim, fam, bed) = read_plink(join(get_data_folder(), "chr*.bed"),
-                             verbose=False)
-print(bim.head())
-#   chrom        snp       cm     pos a0 a1  i
-# 0    11  316849996     0.00  157439  C  T  0
-# 1    11  316874359     0.00  181802  G  C  1
-# 2    11  316941526     0.00  248969  G  C  2
-# 3    11  317137620     0.00  445063  C  T  3
-# 4    11  317534352     0.00  841795  C  T  4
-print(fam.head())
-#     fid   iid father mother gender trait  i
-# 0  B001  B001      0      0      0    -9  0
-# 1  B002  B002      0      0      0    -9  1
-# 2  B003  B003      0      0      0    -9  2
-# 3  B004  B004      0      0      0    -9  3
-# 4  B005  B005      0      0      0    -9  4
-print(bed.compute())
-# [[0.00 0.00 0.00 ... 2.00 2.00 0.00]
-#  [0.00 1.00 0.00 ... 2.00 1.00 0.00]
-#  [2.00 2.00 2.00 ... 0.00 0.00 2.00]
-#  ...
-#  [2.00 0.00 0.00 ... 2.00 2.00 1.00]
-#  [2.00 0.00 0.00 ... 2.00 2.00 0.00]
-#  [0.00  nan 0.00 ... 1.00 2.00 0.00]]
+# from os.path import join
+# from pandas_plink import read_plink
+# from pandas_plink import get_data_folder
+# (bim, fam, bed) = read_plink(join(get_data_folder(), "chr*.bed"),
+#                              verbose=False)
+# print(bim.head())
+# #   chrom        snp       cm     pos a0 a1  i
+# # 0    11  316849996     0.00  157439  C  T  0
+# # 1    11  316874359     0.00  181802  G  C  1
+# # 2    11  316941526     0.00  248969  G  C  2
+# # 3    11  317137620     0.00  445063  C  T  3
+# # 4    11  317534352     0.00  841795  C  T  4
+# print(fam.head())
+# #     fid   iid father mother gender trait  i
+# # 0  B001  B001      0      0      0    -9  0
+# # 1  B002  B002      0      0      0    -9  1
+# # 2  B003  B003      0      0      0    -9  2
+# # 3  B004  B004      0      0      0    -9  3
+# # 4  B005  B005      0      0      0    -9  4
+# print(bed.compute())
+# # [[0.00 0.00 0.00 ... 2.00 2.00 0.00]
+# #  [0.00 1.00 0.00 ... 2.00 1.00 0.00]
+# #  [2.00 2.00 2.00 ... 0.00 0.00 2.00]
+# #  ...
+# #  [2.00 0.00 0.00 ... 2.00 2.00 1.00]
+# #  [2.00 0.00 0.00 ... 2.00 2.00 0.00]
+# #  [0.00  nan 0.00 ... 1.00 2.00 0.00]]
 
 
 # SNP matrix
@@ -158,42 +158,372 @@ print(bed.compute())
 
 # print("SNP Information:")
 
+
+# (1) Unmapped or Non-standard Chromosomes:
+# 기준: 비표준 염색체 제거 (예: chrUn, random, alt, contig 등).
+# 이유: 이러한 염색체는 보통 불완전한 데이터로 간주되며, 분석에 포함할 실질적 가치가 없습니다.
+
+# (2) Mitochondrial or Chloroplast DNA:
+# 기준: chrM(미토콘드리아), chloroplast 등의 염색체 제외.
+# 이유: SNP 분석의 주요 목적이 핵 염색체에 한정될 경우, 이러한 데이터를 제외합니다.
+
+# (3) Low SNP Density Regions:
+# 기준: SNP가 거의 없는 염색체 제거.
+# 이유: 분석에 기여하는 변이가 거의 없는 영역은 제거하여 계산 자원을 절약할 수 있습니다.
+
+# (4) High Recombination or Structural Variability Regions:
+# 기준: 높은 재조합율이나 구조적 변이가 많은 영역 제외.
+# 이유: 해당 영역은 분석의 왜곡을 일으킬 가능성이 높습니다.
+
+# (5) Chromosome Length:
+# 기준: 특정 기준 이하의 짧은 contig 또는 scaffold 제거. (예: 길이 < 1Mb)
+# 이유: 짧은 염색체는 대부분 비표준이며 분석의 신뢰도를 떨어뜨릴 수 있습니다.
+
+# 3. SNP 레벨 필터링 기준 (추가적으로 적용 가능)
+# (1) Minor Allele Frequency (MAF):
+# 기준: MAF < 0.01인 변이 제외.
+# 이유: 너무 희귀한 변이는 통계적으로 의미가 없을 수 있습니다.
+
+# (2) Call Rate:
+# 기준: SNP가 너무 많은 샘플에서 결측된 경우 제외. (예: Call rate < 90%)
+# 이유: 데이터의 신뢰도를 높이기 위함.
+
+# (3) Hardy-Weinberg Equilibrium (HWE):
+# 기준: HWE에서 크게 벗어나는 SNP 제외.
+# 이유: 비정상적인 데이터나 기술적 오류를 나타낼 수 있습니다.
+
+# (4) Depth of Coverage per SNP:
+# 기준: 특정 SNP의 평균 깊이가 너무 낮거나 높을 경우 제외. (예: DP < 5 또는 DP > 100)
+# 이유: 낮은 깊이는 신뢰도가 낮고, 높은 깊이는 PCR 중복 가능성이 있습
+# 니다.
+
 # 2번째 방법 (pandas) https://pypi.org/project/vcf2pandas/
+
 # pip install pandas
 import pandas as pd
 
+base_code_map = {
+    ('A', 'T'): 'W', ('T', 'A'): 'W', # A or T
+    ('C', 'G'): 'S', ('G', 'C'): 'S', # G or C
+    ('A', 'C'): 'M', ('C', 'A'): 'M', # A or C
+    ('G', 'T'): 'K', ('T', 'G'): 'K', # G or T
+    ('A', 'G'): 'R', ('G', 'A'): 'R', # A or G
+    ('C', 'T'): 'Y', ('T', 'C'): 'Y'  # C or T
+}
+def get_base_code(base1, base2):
+    pair = (base1, base2)
+    return base_code_map.get(pair, 'N') 
+
 # VCF 파일 읽기
 def VCF_to_SNP_matrix(vcf_file):
-    with open(vcf_file, 'r') as file:
+      with open(vcf_file, 'r') as file:
         lines = file.readlines()
+        metadata = [line for line in lines if line.startswith('##')]
+        header_line = [line for line in lines if line.startswith('#') and not line.startswith('##')]
+        data_lines = [line for line in lines if not line.startswith('#')]
+        header = header_line[0].strip().split('\t')
+        header_title= list(filter(lambda x: len(x)>1,header))
+        header_samples = header_title[9:]
+        SNP_data_Dict ={}
+        sample_List=[]
+        for sample in range(len(header_samples)):
+            sample_name=header_samples[sample]
+            sample_List.append(sample_name)
+            SNP_data_Dict[sample_name] = {}
+            for chromosome in range(len(data_lines)):
+                SNP_num=f'SNP{chromosome + 1}'
+                SNP_data_Dict[sample_name][SNP_num]={}
+                datas = data_lines[chromosome].strip().split('\t')
+                data_values = list(filter(lambda x: len(x)>=1,datas))
+                CHROM_data=data_values[0]
+                SNP_data_Dict[sample_name][SNP_num]["CHROM"]=CHROM_data
+                POS_data=data_values[1]
+                SNP_data_Dict[sample_name][SNP_num]["POS"]=POS_data
+                ID_data=data_values[2]
+                SNP_data_Dict[sample_name][SNP_num]["ID"]=ID_data
+                REF_data=data_values[3]
+                SNP_data_Dict[sample_name][SNP_num]["REF"]=REF_data
+                ALT_data=data_values[4]
+                SNP_data_Dict[sample_name][SNP_num]["ALT"]=ALT_data
+                QUAL_data=data_values[5]
+                INFO_data=data_values[7]
+                FORMAT_raw=data_values[8]
+                FORMAT_list=FORMAT_raw.split(':')
+                SAMPLE_Total_raw=[]
+                SAMPLE_data_raw=data_values[9:]
+                for sample in range(len(SAMPLE_data_raw)):
+                    sample_Data_List= SAMPLE_data_raw[sample].split(':')
+                    format_dict = dict(zip(FORMAT_list, sample_Data_List))
+                    if len(ALT_data) < 2 :
+                        if format_dict["GT"]=="0/0":
+                            format_dict["GT"]=REF_data
+                        elif format_dict["GT"]=="0/1" or format_dict["GT"]=="1/0":
+                            format_dict["GT"]=get_base_code(REF_data, ALT_data)
+                        elif format_dict["GT"]=="1/1":
+                            format_dict["GT"]=ALT_data
+                        else:
+                            format_dict["GT"]='N'
+                    else :
+                        format_dict["GT"]="N"
+                    final_format_dict ={'REF':REF_data, 'ALT':ALT_data, 'GT':format_dict["GT"], 'AD/DP':format_dict['AD']+"/"+format_dict['DP']}
+                    sample_FormatData_List = final_format_dict
+                    SAMPLE_Total_raw.append(sample_FormatData_List)
+                SAMPLE_dic = dict(zip(sample_List, SAMPLE_Total_raw))
+                SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
+        return SNP_data_Dict
+      
 
-    # 메타데이터와 데이터 분리
-    metadata = [line for line in lines if line.startswith('##')]
-    header_line = [line for line in lines if line.startswith('#') and not line.startswith('##')]
-    data_lines = [line for line in lines if not line.startswith('#')]
+# VCF_to_SNP_matrix("vcfExample.vcf")
+# VCF_to_SNP_matrix("example.vcf")
 
-    # 컬럼 헤더 추출
-    header = header_line[0].strip().split('\t')
+# def VCF_to_SNP_matrix_reverse(vcf_file):
+    # result_reverse_matrix ={}
 
-    # 데이터프레임 생성
-    # pd.DataFrame 함수(a,b): a는 불러올 데이터 : b는 dataframe의 column name을 list로 전환환
-    data = [line.strip().split('\t') for line in data_lines]
-    df = pd.DataFrame(data, columns=header)
+    # result_matrix = VCF_to_SNP_matrix_reverse{vcf_file}
+    # for sample_key, sample_value in result_matrix 
+    # for SNP_key, SNP_value in sample_value 
+    # sample_List =  result_matrix의 첫번째 key값
+    # SNP_List = result_matrix의 샘플 내의 key값
 
-    # 데이터프레임 확인
-    # head()는 pandas에서 데이터확인하는 방법으로 dataframe의 처음 n줄데이터를 출력 
-    print(df.head())
-    # tail()는 dataframe의 마지막 n줄 데이터를 출력
+    # ex) {SNP1:{sample1:{GT:' ', AD/DP:" / "},sample2:{GT:' ', AD/DP:" / "}, ...}}
 
-    # 'CHROM' 열의 값 확인
-    # nunique()는 데이터에 고유값들의 수를 출력해주는 함수
-    print(df['CHROM'].unique())
+    # for 문
+    # result_reverse_matrix[SNP_List][sample_List] = SNP_value
 
-    # 'QUAL' 값이 30 이상인 변이 선택
-    #  QUAL :  ALT가 된 Phred 척도 품질 점수로 변이관련 품질 점수, hred-척도 추정치
-    # astype 함수는 열의 요소의 dtype을 변경하는 함수, astype(float)로 QUAL을 float로 변환
-    high_quality_variants = df[df['QUAL'].astype(float) >= 30]
-    print(high_quality_variants)
 
-    # 'QUAL' 열의 요약 통계
-    print(df['QUAL'].astype(float).describe())
+def VCF_to_SNP_matrix_reverse(vcf_file):
+    result_reverse_matrix ={}
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    SNP_List = []
+
+    SNP_keys = {}
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+        SNP_keys=sample_value
+        # SNP_List.append(sample_value)
+    SNP_List=SNP_keys.keys()
+
+    for SNP_key in SNP_List:
+        for sample_key in sample_List:
+            result_reverse_matrix.setdefault(SNP_key, {})
+            result_reverse_matrix[SNP_key][sample_key] = result_matrix[sample_key][SNP_key]
+    return result_reverse_matrix
+
+# input
+import re
+def SNP_matrix_delate (vcf_file):
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+    input_value = str(input())
+    delimiters = r'[,\s/\\]'
+    select_samples=re.split(delimiters, input_value)
+    select_samples=[x for x in select_samples if x]
+    if len(select_samples) == 0:
+        return result_matrix
+    elif len(select_samples) == 1:
+        if select_samples[0] not in result_matrix:
+            return result_matrix
+        else:
+            del result_matrix[str(select_samples[0])]
+        return result_matrix
+    elif len(select_samples) >= 2:
+        for select_sample in select_samples:
+            if select_sample not in result_matrix:
+                return result_matrix
+            else:
+                print(f"{str(select_sample)}")
+                del result_matrix[str(select_sample)]
+        return result_matrix
+    print(result_matrix)
+
+
+SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+
+# 함수 tuple
+# def SNP_matrix_delate (vcf_file, select_samples_List):
+#     result_matrix = VCF_to_SNP_matrix(vcf_file)
+#     sample_List = []
+#     for sample_key, sample_value in result_matrix.items():
+#         sample_List.append(sample_key)
+#     delimiters = r'[,\s/\\]'
+#     select_samples=re.split(delimiters, select_samples_List)
+#     select_samples=[x for x in select_samples if x]
+#     if len(select_samples) == 0:
+#         return result_matrix
+#     elif len(select_samples) == 1:
+#         if select_samples[0] not in result_matrix:
+#             return result_matrix
+#         else:
+#             del result_matrix[str(select_samples[0])]
+#         return result_matrix
+#     elif len(select_samples) >= 2:
+#         for select_sample in select_samples:
+#             if select_sample not in result_matrix:
+#                 return result_matrix
+#             else:
+#                 print(f"{str(select_sample)}")
+#                 del result_matrix[str(select_sample)]
+#         return result_matrix
+#     print(result_matrix)
+
+# select_samples_List="24BB2-1-1/24BB2-1-2"
+
+# SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+
+
+# def SNP_matrix_SNP_Indel(vcf_file,input = 'SNP'):
+# def SNP_matrix_SNP_Indel(vcf_file):
+#     # 모든 데이터의 사전
+#     SNP_Indel_Dic = {
+#     "SNP": {},
+#     "Insert": {},
+#     "Delete": {},
+#     "Missing": {},
+#     "else": {}
+# }
+#     # ex {SNP: ,Insert: ,Delete: , Missing:  ,else:}
+#     result_matrix = VCF_to_SNP_matrix(vcf_file)
+#     sample_List = []
+#     SNP_List = []
+#     SNP_keys = {}
+#     for sample_key, sample_value in result_matrix.items():
+#         sample_List.append(sample_key)
+#         SNP_keys=sample_value
+#     SNP_List=SNP_keys.keys()
+
+#     for sample in sample_List:
+#         for SNP in SNP_List:
+#             REF = result_matrix[sample][SNP]["REF"]
+#             ALT = result_matrix[sample][SNP]["ALT"]
+#             # print(f"Sample: {sample}, SNP: {SNP}")
+#             # print(f"REF: {REF}, ALT: {ALT}")
+#             if len(REF) == 1 and len(ALT) == 1:
+#                 # Missing
+#                 if ALT == '.' or ALT == ',':
+#                     SNP_Indel_Dic["missing"][sample][SNP] = result_matrix[sample][SNP]
+#                 # SNP
+#                 else:
+#                     SNP_Indel_Dic["SNP"][sample][SNP] = result_matrix[sample][SNP]
+                    
+#             else:
+#                 # Indel
+#                 if len(REF) > 1 or len(ALT) > 1:
+#                     # Insert
+#                     if len(REF) > len(ALT):
+#                         SNP_Indel_Dic["Insert"][sample][SNP] = result_matrix[sample][SNP]
+
+#                     # Delete
+#                     if len(ALT) > len(REF):
+#                         SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
+                    
+#                 else:
+#                     # Multiply, complex, symbolic
+#                     SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+#     print(SNP_Indel_Dic)
+
+#     # print(SNP_List)
+#     # # SNP or Missing
+#     # if len(REF) == 1 and len(ALT) == 1:
+#     #     # Missing
+#     #     if ALT == '.' or ALT == ',':
+
+#     #     # SNP
+#     #     else
+            
+#     # else:
+#     #     # Indel
+#     #     if len(REF) > 1 or len(ALT) > 1:
+#     #         # Insert
+#     #         if len(REF) > len(ALT):
+
+#     #         # Delete
+#     #         if len(ALT) > len(REF):
+            
+#     #     else:
+#     #         # Multiply, complex, symbolic
+
+def SNP_matrix_SNP_Indel(vcf_file):
+    # 모든 데이터의 사전
+    SNP_Indel_Dic = {
+        "SNP": {},
+        "Insert": {},
+        "Delete": {},
+        "Missing": {},
+        "else": {}
+    }
+
+    # 결과 매트릭스
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    SNP_List = []
+    SNP_keys = {}
+
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+        SNP_keys = sample_value
+    SNP_List = SNP_keys.keys()
+
+    for sample in sample_List:
+        # 샘플별 초기화
+        for category in SNP_Indel_Dic.keys():
+            if sample not in SNP_Indel_Dic[category]:
+                SNP_Indel_Dic[category][sample] = {}
+
+        for SNP in SNP_List:
+            REF = result_matrix[sample][SNP]["REF"]
+            ALT = result_matrix[sample][SNP]["ALT"]
+            
+            if len(REF) == 1 and len(ALT) == 1:
+                # Missing
+                if ALT == '.' or ALT == ',':
+                    SNP_Indel_Dic["Missing"][sample][SNP] = result_matrix[sample][SNP]
+                # SNP
+                else:
+                    SNP_Indel_Dic["SNP"][sample][SNP] = result_matrix[sample][SNP]
+                    
+            else:
+                # Indel
+                if len(REF) > 1 or len(ALT) > 1:
+                    # Delete
+                    if len(REF) < len(ALT):
+                        SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
+
+                    # Insert or Multiply, complex, symbolic
+                    elif len(ALT) > len(REF):
+                        # Multiply
+                        if len(str(ALT).split(",")) > 1:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                        # symbolic
+                        elif str(ALT).find("<") >= 1:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                        # Insert
+                        else:
+                            SNP_Indel_Dic["Insert"][sample][SNP] = result_matrix[sample][SNP]
+                    else:
+                        SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                    
+                else:
+                    SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+    
+    print(SNP_Indel_Dic)
+
+
+SNP_matrix_SNP_Indel("SNPINDELexample.vcf")
+   
+
+
+# vcf to SNP matrix 1 (sample - SNP)
+VCF_to_SNP_matrix("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 2 (SNP - sample)
+VCF_to_SNP_matrix_reverse("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 3 - input
+SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 3 - tuple
+select_samples_List="24BB2-1-1/24BB2-1-2"
+# SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+
+
+

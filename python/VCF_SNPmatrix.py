@@ -67,4 +67,87 @@ def VCF_to_SNP_matrix(vcf_file):
                 SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
         print(SNP_data_Dict)
 
+def VCF_to_SNP_matrix_reverse(vcf_file):
+    result_reverse_matrix ={}
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    SNP_List = []
+    SNP_keys = {}
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+        SNP_keys=sample_value
+    SNP_List=SNP_keys.keys()
+
+    for SNP_key in SNP_List:
+        for sample_key in sample_List:
+            result_reverse_matrix.setdefault(SNP_key, {})
+            result_reverse_matrix[SNP_key][sample_key] = result_matrix[sample_key][SNP_key]
+    print (result_reverse_matrix)
+
+# input
+import re
+def SNP_matrix_delate (vcf_file):
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+    input_value = str(input())
+    delimiters = r'[,\s/\\]'
+    select_samples=re.split(delimiters, input_value)
+    select_samples=[x for x in select_samples if x]
+    if len(select_samples) == 0:
+        return result_matrix
+    elif len(select_samples) == 1:
+        if select_samples[0] not in result_matrix:
+            return result_matrix
+        else:
+            del result_matrix[str(select_samples[0])]
+        return result_matrix
+    elif len(select_samples) >= 2:
+        for select_sample in select_samples:
+            if select_sample not in result_matrix:
+                return result_matrix
+            else:
+                print(f"{str(select_sample)}")
+                del result_matrix[str(select_sample)]
+        return result_matrix
+    print(result_matrix)
+
+# 함수 tuple
+def SNP_matrix_delate (vcf_file, select_samples_List):
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+    delimiters = r'[,\s/\\]'
+    select_samples=re.split(delimiters, select_samples_List)
+    select_samples=[x for x in select_samples if x]
+    if len(select_samples) == 0:
+        return result_matrix
+    elif len(select_samples) == 1:
+        if select_samples[0] not in result_matrix:
+            return result_matrix
+        else:
+            del result_matrix[str(select_samples[0])]
+        return result_matrix
+    elif len(select_samples) >= 2:
+        for select_sample in select_samples:
+            if select_sample not in result_matrix:
+                return result_matrix
+            else:
+                print(f"{str(select_sample)}")
+                del result_matrix[str(select_sample)]
+        return result_matrix
+    print(result_matrix)
+
+select_samples_List="24BB2-1-1/24BB2-1-2"
+
+# vcf to SNP matrix 1
 VCF_to_SNP_matrix("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 2
+VCF_to_SNP_matrix_reverse("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 3 - input
+SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+# vcf to SNP matrix 3 - tuple
+select_samples_List="24BB2-1-1/24BB2-1-2"
+SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
