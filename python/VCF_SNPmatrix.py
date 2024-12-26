@@ -260,3 +260,4 @@ select_samples_List="24BB2-1-1/24BB2-1-2"
 SNP_matrix_delete2("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
 # vcf to SNP matrix 4 - SNP_Indel
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
+

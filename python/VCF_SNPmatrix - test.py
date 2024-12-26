@@ -312,7 +312,7 @@ def VCF_to_SNP_matrix_reverse(vcf_file):
 
 # input
 import re
-def SNP_matrix_delate (vcf_file):
+def SNP_SNPmatrix_delete (vcf_file):
     result_matrix = VCF_to_SNP_matrix(vcf_file)
     sample_List = []
     for sample_key, sample_value in result_matrix.items():
@@ -340,10 +340,10 @@ def SNP_matrix_delate (vcf_file):
     print(result_matrix)
 
 
-SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+SNP_SNPmatrix_delete("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 
 # 함수 tuple
-# def SNP_matrix_delate (vcf_file, select_samples_List):
+# def SNP_SNPmatrix_delete (vcf_file, select_samples_List):
 #     result_matrix = VCF_to_SNP_matrix(vcf_file)
 #     sample_List = []
 #     for sample_key, sample_value in result_matrix.items():
@@ -371,7 +371,7 @@ SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 
 # select_samples_List="24BB2-1-1/24BB2-1-2"
 
-# SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+# SNP_SNPmatrix_delete("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
 
 
 def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
@@ -461,7 +461,6 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
 
 
 
-SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "etc")
    
 
 
@@ -470,10 +469,50 @@ VCF_to_SNP_matrix("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 2 (SNP - sample)
 VCF_to_SNP_matrix_reverse("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 3 - input
-SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+SNP_SNPmatrix_delete("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 3 - tuple
 select_samples_List="24BB2-1-1/24BB2-1-2"
-# SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+# SNP_SNPmatrix_delete("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+# vcf to SNP matrix 4 - SNP_Indel
+SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "etc")
 
+import xlwings as xw
 
+# 엑셀 파일 생성
+wb = xw.Book('example.xlsx')  # example.xlsx 파일이 생성됨
 
+# 워크시트 추가 (이름이 "Sheet1"인 워크시트 삭제)
+if "Sheet1" in wb.sheets:
+    wb.sheets["Sheet1"].delete()
+
+ws = wb.sheets.add('Sheet1')  # 새로운 워크시트 추가
+
+# 데이터 쓰기
+ws.range('A1').value = '이름'
+ws.range('B1').value = '나이'
+ws.range('A2').value = '박우리'
+ws.range('B2').value = 30
+ws.range('A3').value = '함자영'
+ws.range('B3').value = 25
+
+# 차트 생성
+chart = ws.charts.add()
+chart.set_source_data(ws.range('A1:B3'))
+chart.chart_type = 'column_clustered'
+chart.name = '나이별 차트'
+chart.title = '나이별 데이터'
+chart.x_axis.title = '이름'
+chart.y_axis.title = '나이'
+
+# 차트 위치 및 크기 조정
+chart.top = 'C1'
+chart.left = 'E1'
+chart.width = 400
+chart.height = 300
+
+# 엑셀 파일 저장 및 닫기
+wb.save()
+wb.close()
+
+# 차트 출력 완료 메시지
+print('엑셀 파일 생성 및 차트 작성이 완료되었습니다.')
