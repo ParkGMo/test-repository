@@ -374,78 +374,7 @@ SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
 
 
-# def SNP_matrix_SNP_Indel(vcf_file,input = 'SNP'):
-# def SNP_matrix_SNP_Indel(vcf_file):
-#     # 모든 데이터의 사전
-#     SNP_Indel_Dic = {
-#     "SNP": {},
-#     "Insert": {},
-#     "Delete": {},
-#     "Missing": {},
-#     "else": {}
-# }
-#     # ex {SNP: ,Insert: ,Delete: , Missing:  ,else:}
-#     result_matrix = VCF_to_SNP_matrix(vcf_file)
-#     sample_List = []
-#     SNP_List = []
-#     SNP_keys = {}
-#     for sample_key, sample_value in result_matrix.items():
-#         sample_List.append(sample_key)
-#         SNP_keys=sample_value
-#     SNP_List=SNP_keys.keys()
-
-#     for sample in sample_List:
-#         for SNP in SNP_List:
-#             REF = result_matrix[sample][SNP]["REF"]
-#             ALT = result_matrix[sample][SNP]["ALT"]
-#             # print(f"Sample: {sample}, SNP: {SNP}")
-#             # print(f"REF: {REF}, ALT: {ALT}")
-#             if len(REF) == 1 and len(ALT) == 1:
-#                 # Missing
-#                 if ALT == '.' or ALT == ',':
-#                     SNP_Indel_Dic["missing"][sample][SNP] = result_matrix[sample][SNP]
-#                 # SNP
-#                 else:
-#                     SNP_Indel_Dic["SNP"][sample][SNP] = result_matrix[sample][SNP]
-                    
-#             else:
-#                 # Indel
-#                 if len(REF) > 1 or len(ALT) > 1:
-#                     # Insert
-#                     if len(REF) > len(ALT):
-#                         SNP_Indel_Dic["Insert"][sample][SNP] = result_matrix[sample][SNP]
-
-#                     # Delete
-#                     if len(ALT) > len(REF):
-#                         SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
-                    
-#                 else:
-#                     # Multiply, complex, symbolic
-#                     SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
-#     print(SNP_Indel_Dic)
-
-#     # print(SNP_List)
-#     # # SNP or Missing
-#     # if len(REF) == 1 and len(ALT) == 1:
-#     #     # Missing
-#     #     if ALT == '.' or ALT == ',':
-
-#     #     # SNP
-#     #     else
-            
-#     # else:
-#     #     # Indel
-#     #     if len(REF) > 1 or len(ALT) > 1:
-#     #         # Insert
-#     #         if len(REF) > len(ALT):
-
-#     #         # Delete
-#     #         if len(ALT) > len(REF):
-            
-#     #     else:
-#     #         # Multiply, complex, symbolic
-
-def SNP_matrix_SNP_Indel(vcf_file):
+def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
     # 모든 데이터의 사전
     SNP_Indel_Dic = {
         "SNP": {},
@@ -475,7 +404,6 @@ def SNP_matrix_SNP_Indel(vcf_file):
         for SNP in SNP_List:
             REF = result_matrix[sample][SNP]["REF"]
             ALT = result_matrix[sample][SNP]["ALT"]
-            
             if len(REF) == 1 and len(ALT) == 1:
                 # Missing
                 if ALT == '.' or ALT == ',':
@@ -487,31 +415,53 @@ def SNP_matrix_SNP_Indel(vcf_file):
             else:
                 # Indel
                 if len(REF) > 1 or len(ALT) > 1:
-                    # Delete
-                    if len(REF) < len(ALT):
-                        SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
-
-                    # Insert or Multiply, complex, symbolic
+                    if len(REF) > len(ALT):
+                    # Delete 
+                        if len(ALT) == 1 :
+                            SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
+                        else:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
                     elif len(ALT) > len(REF):
-                        # Multiply
+                        # Insert
                         if len(str(ALT).split(",")) > 1:
                             SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
-                        # symbolic
-                        elif str(ALT).find("<") >= 1:
+                        elif str(ALT).find("<")>=0:
                             SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
-                        # Insert
-                        else:
+                        elif len(REF) == 1 :
                             SNP_Indel_Dic["Insert"][sample][SNP] = result_matrix[sample][SNP]
-                    else:
-                        SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
-                    
+                        else:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
                 else:
                     SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
-    
-    print(SNP_Indel_Dic)
+
+    if search.upper() == "ALL":
+        print(SNP_Indel_Dic)
+    elif search.upper() == "SNP":
+        print(SNP_Indel_Dic["SNP"])
+    elif search.upper() == "INSERT":
+        print(SNP_Indel_Dic["Insert"])
+    elif search.upper() == "INSERTION":
+        print(SNP_Indel_Dic["Insert"])
+    elif search.upper() == "DELETE":
+        print(SNP_Indel_Dic["Delete"])
+    elif search.upper() == "DELETION":
+        print(SNP_Indel_Dic["Delete"])
+    elif search.upper() == "MISS":
+        print(SNP_Indel_Dic["Missing"])
+    elif search.upper() == "MISSING":
+        print(SNP_Indel_Dic["Missing"])
+    elif search.upper() == "ELSE":
+        print(SNP_Indel_Dic["else"])
+    elif search.upper() == "ETC":
+        print(SNP_Indel_Dic["else"])
+    else:
+        print(SNP_Indel_Dic)
 
 
-SNP_matrix_SNP_Indel("SNPINDELexample.vcf")
+
+
+
+SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "etc")
    
 
 

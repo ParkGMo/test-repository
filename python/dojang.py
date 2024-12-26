@@ -329,3 +329,4 @@ print(files)
 imageFile = filter(lambda x: x.find('.jpg')!= -1 or x.find('.png')!= -1, files)
 print(list(imageFile))
 # 결과 ['1.png', '10.jpg', '2.jpg', '3.png']
+

@@ -66,6 +66,7 @@ def VCF_to_SNP_matrix(vcf_file):
                 SAMPLE_dic = dict(zip(sample_List, SAMPLE_Total_raw))
                 SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
         print(SNP_data_Dict)
+        return SNP_data_Dict
 
 def VCF_to_SNP_matrix_reverse(vcf_file):
     result_reverse_matrix ={}
@@ -83,10 +84,11 @@ def VCF_to_SNP_matrix_reverse(vcf_file):
             result_reverse_matrix.setdefault(SNP_key, {})
             result_reverse_matrix[SNP_key][sample_key] = result_matrix[sample_key][SNP_key]
     print (result_reverse_matrix)
+    return result_reverse_matrix
 
 # input
 import re
-def SNP_matrix_delate (vcf_file):
+def SNP_matrix_delete1 (vcf_file):
     result_matrix = VCF_to_SNP_matrix(vcf_file)
     sample_List = []
     for sample_key, sample_value in result_matrix.items():
@@ -112,9 +114,10 @@ def SNP_matrix_delate (vcf_file):
                 del result_matrix[str(select_sample)]
         return result_matrix
     print(result_matrix)
+    return result_matrix
 
 # 함수 tuple
-def SNP_matrix_delate (vcf_file, select_samples_List):
+def SNP_matrix_delete2 (vcf_file, select_samples_List):
     result_matrix = VCF_to_SNP_matrix(vcf_file)
     sample_List = []
     for sample_key, sample_value in result_matrix.items():
@@ -140,14 +143,120 @@ def SNP_matrix_delate (vcf_file, select_samples_List):
         return result_matrix
     print(result_matrix)
 
-select_samples_List="24BB2-1-1/24BB2-1-2"
+def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
+    # 모든 데이터의 사전
+    SNP_Indel_Dic = {
+        "SNP": {},
+        "Insert": {},
+        "Delete": {},
+        "Missing": {},
+        "else": {}
+    }
+
+    # 결과 매트릭스
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    sample_List = []
+    SNP_List = []
+    SNP_keys = {}
+
+    for sample_key, sample_value in result_matrix.items():
+        sample_List.append(sample_key)
+        SNP_keys = sample_value
+    SNP_List = SNP_keys.keys()
+
+    for sample in sample_List:
+        for category in SNP_Indel_Dic.keys():
+            if sample not in SNP_Indel_Dic[category]:
+                SNP_Indel_Dic[category][sample] = {}
+
+        for SNP in SNP_List:
+            REF = result_matrix[sample][SNP]["REF"]
+            ALT = result_matrix[sample][SNP]["ALT"]
+            if len(REF) == 1 and len(ALT) == 1:
+                # Missing
+                if ALT == '.' or ALT == ',':
+                    SNP_Indel_Dic["Missing"][sample][SNP] = result_matrix[sample][SNP]
+                # SNP
+                else:
+                    SNP_Indel_Dic["SNP"][sample][SNP] = result_matrix[sample][SNP]
+                    
+            else:
+                # Indel
+                if len(REF) > 1 or len(ALT) > 1:
+                    if len(REF) > len(ALT):
+                    # Delete 
+                        if len(ALT) == 1 :
+                            SNP_Indel_Dic["Delete"][sample][SNP] = result_matrix[sample][SNP]
+                        else:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                    elif len(ALT) > len(REF):
+                        # Insert
+                        if len(str(ALT).split(",")) > 1:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                        elif str(ALT).find("<")>=0:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                        elif len(REF) == 1 :
+                            SNP_Indel_Dic["Insert"][sample][SNP] = result_matrix[sample][SNP]
+                        else:
+                            SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+                else:
+                    SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
+
+    if search.upper() == "ALL":
+        print(SNP_Indel_Dic)
+    elif search.upper() == "SNP":
+        print(SNP_Indel_Dic["SNP"])
+    elif search.upper() == "INSERT":
+        print(SNP_Indel_Dic["Insert"])
+    elif search.upper() == "INSERTION":
+        print(SNP_Indel_Dic["Insert"])
+    elif search.upper() == "DELETE":
+        print(SNP_Indel_Dic["Delete"])
+    elif search.upper() == "DELETION":
+        print(SNP_Indel_Dic["Delete"])
+    elif search.upper() == "MISS":
+        print(SNP_Indel_Dic["Missing"])
+    elif search.upper() == "MISSING":
+        print(SNP_Indel_Dic["Missing"])
+    elif search.upper() == "ELSE":
+        print(SNP_Indel_Dic["else"])
+    elif search.upper() == "ETC":
+        print(SNP_Indel_Dic["else"])
+    else:
+        print(SNP_Indel_Dic)
+
+    if search.upper() == "ALL":
+        return SNP_Indel_Dic
+    elif search.upper() == "SNP":
+        return SNP_Indel_Dic["SNP"]
+    elif search.upper() == "INSERT":
+        return SNP_Indel_Dic["Insert"]
+    elif search.upper() == "INSERTION":
+        return SNP_Indel_Dic["Insert"]
+    elif search.upper() == "DELETE":
+        return SNP_Indel_Dic["Delete"]
+    elif search.upper() == "DELETION":
+        return SNP_Indel_Dic["Delete"]
+    elif search.upper() == "MISS":
+        return SNP_Indel_Dic["Missing"]
+    elif search.upper() == "MISSING":
+        return SNP_Indel_Dic["Missing"]
+    elif search.upper() == "ELSE":
+        return SNP_Indel_Dic["else"]
+    elif search.upper() == "ETC":
+        return SNP_Indel_Dic["else"]
+    else:
+        return SNP_Indel_Dic
+
 
 # vcf to SNP matrix 1
 VCF_to_SNP_matrix("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 2
 VCF_to_SNP_matrix_reverse("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 3 - input
-SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
+SNP_matrix_delete1("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf")
 # vcf to SNP matrix 3 - tuple
 select_samples_List="24BB2-1-1/24BB2-1-2"
-SNP_matrix_delate("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+SNP_matrix_delete2("Capsicum_GBS_191ea_Filtered_SNP_10009.vcf", select_samples_List)
+# vcf to SNP matrix 4 - SNP_Indel
+SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
