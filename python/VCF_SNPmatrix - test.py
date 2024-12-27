@@ -476,43 +476,43 @@ select_samples_List="24BB2-1-1/24BB2-1-2"
 # vcf to SNP matrix 4 - SNP_Indel
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "etc")
 
-import xlwings as xw
+# import xlwings as xw
 
-# 엑셀 파일 생성
-wb = xw.Book('example.xlsx')  # example.xlsx 파일이 생성됨
+# # 엑셀 파일 생성
+# wb = xw.Book('example.xlsx')  # example.xlsx 파일이 생성됨
 
-# 워크시트 추가 (이름이 "Sheet1"인 워크시트 삭제)
-if "Sheet1" in wb.sheets:
-    wb.sheets["Sheet1"].delete()
+# # 워크시트 추가 (이름이 "Sheet1"인 워크시트 삭제)
+# if "Sheet1" in wb.sheets:
+#     wb.sheets["Sheet1"].delete()
 
-ws = wb.sheets.add('Sheet1')  # 새로운 워크시트 추가
+# ws = wb.sheets.add('Sheet1')  # 새로운 워크시트 추가
 
-# 데이터 쓰기
-ws.range('A1').value = '이름'
-ws.range('B1').value = '나이'
-ws.range('A2').value = '박우리'
-ws.range('B2').value = 30
-ws.range('A3').value = '함자영'
-ws.range('B3').value = 25
+# # 데이터 쓰기
+# ws.range('A1').value = '이름'
+# ws.range('B1').value = '나이'
+# ws.range('A2').value = '박우리'
+# ws.range('B2').value = 30
+# ws.range('A3').value = '함자영'
+# ws.range('B3').value = 25
 
-# 차트 생성
-chart = ws.charts.add()
-chart.set_source_data(ws.range('A1:B3'))
-chart.chart_type = 'column_clustered'
-chart.name = '나이별 차트'
-chart.title = '나이별 데이터'
-chart.x_axis.title = '이름'
-chart.y_axis.title = '나이'
+# # 차트 생성
+# chart = ws.charts.add()
+# chart.set_source_data(ws.range('A1:B3'))
+# chart.chart_type = 'column_clustered'
+# chart.name = '나이별 차트'
+# chart.title = '나이별 데이터'
+# chart.x_axis.title = '이름'
+# chart.y_axis.title = '나이'
 
-# 차트 위치 및 크기 조정
-chart.top = 'C1'
-chart.left = 'E1'
-chart.width = 400
-chart.height = 300
+# # 차트 위치 및 크기 조정
+# chart.top = 'C1'
+# chart.left = 'E1'
+# chart.width = 400
+# chart.height = 300
 
-# 엑셀 파일 저장 및 닫기
-wb.save()
-wb.close()
+# # 엑셀 파일 저장 및 닫기
+# wb.save()
+# wb.close()
 
-# 차트 출력 완료 메시지
-print('엑셀 파일 생성 및 차트 작성이 완료되었습니다.')
+# # 차트 출력 완료 메시지
+# print('엑셀 파일 생성 및 차트 작성이 완료되었습니다.')

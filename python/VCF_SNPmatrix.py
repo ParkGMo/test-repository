@@ -232,7 +232,7 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
     elif search.upper() == "INSERT":
         return SNP_Indel_Dic["Insert"]
     elif search.upper() == "INSERTION":
-        return SNP_Indel_Dic["Insert"]
+        return SNP_Indel_Dic["Insert"] 
     elif search.upper() == "DELETE":
         return SNP_Indel_Dic["Delete"]
     elif search.upper() == "DELETION":
