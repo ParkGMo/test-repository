@@ -77,7 +77,7 @@ def VCF_to_SNP_matrix(vcf_file):
                     SAMPLE_Total_raw.append(sample_FormatData_List)
                 SAMPLE_dic = dict(zip(sample_List, SAMPLE_Total_raw))
                 SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
-        print(SNP_data_Dict)
+        # print(SNP_data_Dict)
         return SNP_data_Dict
 
 # input
@@ -135,7 +135,7 @@ def SNP_matrix_delete2 (vcf_file, select_samples_List):
                 print(f"{str(select_sample)}")
                 del result_matrix[str(select_sample)]
         return result_matrix
-    print(result_matrix)
+    # print(result_matrix)
 
 def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
     # 모든 데이터의 사전
@@ -256,7 +256,7 @@ def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
             if sample in result_matrix_filtered:
                 SNP_Indel_filtered.setdefault(category, {})
                 SNP_Indel_filtered[category][sample] = SNP_dict
-    print(SNP_Indel_filtered)
+    # print(SNP_Indel_filtered)
     return SNP_Indel_filtered
 
 def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
@@ -283,14 +283,15 @@ def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
 # vcf to SNP matrix 1
 VCF_to_SNP_matrix("SNPINDELexample.vcf")
 # vcf to SNP matrix 2
-VCF_to_SNP_matrix_reverse("SNPINDELexample.vcf")
+VCF_to_SNP_matrix_reverse("SNPINDELexample.vcf", "")
 # vcf to SNP matrix 3 - input
 SNP_matrix_delete1("SNPINDELexample.vcf")
 # vcf to SNP matrix 3 - tuple
-select_samples_List="24BB2-1-1/24BB2-1-2"
+select_samples_List="SAMPLE1"
+select_samples_List=" "
 SNP_matrix_delete2("SNPINDELexample.vcf", select_samples_List)
 # vcf to SNP matrix 4 - SNP_Indel
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
 
-
+vcf_SNP_matrix_filtering("SNPINDELexample.vcf", select_samples_List,"all")
 
