@@ -78,41 +78,13 @@ def VCF_to_SNP_matrix(vcf_file):
                 SAMPLE_dic = dict(zip(sample_List, SAMPLE_Total_raw))
                 SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
         return SNP_data_Dict
-VCF_to_SNP_matrix("SNPINDELexample.vcf")
 
 # input
 import re
-def SNP_matrix_delete1 (vcf_file):
-    result_matrix = VCF_to_SNP_matrix(vcf_file)
-    sample_List = []
-    for sample_key, sample_value in result_matrix.items():
-        sample_List.append(sample_key)
-    input_value = str(input())
-    delimiters = r'[,\s/\\]'
-    select_samples=re.split(delimiters, input_value)
-    select_samples=[x for x in select_samples if x]
-    if len(select_samples) == 0:
-        return result_matrix
-    elif len(select_samples) == 1:
-        if select_samples[0] not in result_matrix:
-            return result_matrix
-        else:
-            del result_matrix[str(select_samples[0])]
-        return result_matrix
-    elif len(select_samples) >= 2:
-        for select_sample in select_samples:
-            if select_sample not in result_matrix:
-                return result_matrix
-            else:
-                print(f"{str(select_sample)}")
-                del result_matrix[str(select_sample)]
-        return result_matrix
-    print(result_matrix)
-    return result_matrix
 
 # 함수 tuple
-def SNP_matrix_delete2 (vcf_file, select_samples_List):
-    result_matrix = VCF_to_SNP_matrix(vcf_file)
+def SNP_matrix_delete (indel_list, select_samples_List):
+    result_matrix = indel_list
     sample_List = []
     for sample_key, sample_value in result_matrix.items():
         sample_List.append(sample_key)
@@ -196,29 +168,6 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
                 else:
                     SNP_Indel_Dic["else"][sample][SNP] = result_matrix[sample][SNP]
 
-    # if search.upper() == "ALL":
-    #     print(SNP_Indel_Dic)
-    # elif search.upper() == "SNP":
-    #     print(SNP_Indel_Dic["SNP"])
-    # elif search.upper() == "INSERT":
-    #     print(SNP_Indel_Dic["Insert"])
-    # elif search.upper() == "INSERTION":
-    #     print(SNP_Indel_Dic["Insert"])
-    # elif search.upper() == "DELETE":
-    #     print(SNP_Indel_Dic["Delete"])
-    # elif search.upper() == "DELETION":
-    #     print(SNP_Indel_Dic["Delete"])
-    # elif search.upper() == "MISS":
-    #     print(SNP_Indel_Dic["Missing"])
-    # elif search.upper() == "MISSING":
-    #     print(SNP_Indel_Dic["Missing"])
-    # elif search.upper() == "ELSE":
-    #     print(SNP_Indel_Dic["else"])
-    # elif search.upper() == "ETC":
-    #     print(SNP_Indel_Dic["else"])
-    # else:
-    #     print(SNP_Indel_Dic)
-
     if search.upper() == "ALL":
         return SNP_Indel_Dic
     elif search.upper() == "SNP":
@@ -243,21 +192,21 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
         return SNP_Indel_Dic
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
   
-# def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
-#     # vcf to SNP matrix
-#     result_matrix = VCF_to_SNP_matrix(vcf_file)
-#     # vcf to SNP matrix delete
-#     result_matrix_filtered = SNP_matrix_delete2(vcf_file, select_samples_list)
-#     # SNP_Indel search
-#     SNP_Indel_Dic = SNP_matrix_SNP_Indel(vcf_file, search)
-#     # SNP_Indel filtering
-#     SNP_Indel_filtered = {}
-#     for category, sample_dict in SNP_Indel_Dic.items():
-#         for sample, SNP_dict in sample_dict.items():
-#             if sample in result_matrix_filtered:
-#                 SNP_Indel_filtered.setdefault(category, {})
-#                 SNP_Indel_filtered[category][sample] = SNP_dict
-#     return SNP_Indel_filtered
+def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
+    # vcf to SNP matrix
+    result_matrix = VCF_to_SNP_matrix(vcf_file)
+    # vcf to SNP matrix delete
+    result_matrix_filtered = SNP_matrix_delete(vcf_file, select_samples_list)
+    # SNP_Indel search
+    SNP_Indel_Dic = SNP_matrix_SNP_Indel(vcf_file, search)
+    # SNP_Indel filtering
+    SNP_Indel_filtered = {}
+    for category, sample_dict in SNP_Indel_Dic.items():
+        for sample, SNP_dict in sample_dict.items():
+            if sample in result_matrix_filtered:
+                SNP_Indel_filtered.setdefault(category, {})
+                SNP_Indel_filtered[category][sample] = SNP_dict
+    return SNP_Indel_filtered
 
 def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
     result_reverse_matrix ={}
@@ -284,12 +233,10 @@ def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
 VCF_to_SNP_matrix("SNPINDELexample.vcf")
 # vcf to SNP matrix 2
 VCF_to_SNP_matrix_reverse("SNPINDELexample.vcf", "")
-# vcf to SNP matrix 3 - input
-SNP_matrix_delete1("SNPINDELexample.vcf")
 # vcf to SNP matrix 3 - tuple
 select_samples_List="SAMPLE1"
 select_samples_List=" "
-SNP_matrix_delete2("SNPINDELexample.vcf", select_samples_List)
+# SNP_matrix_delete("SNPINDELexample.vcf", select_samples_List)
 # vcf to SNP matrix 4 - SNP_Indel
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
 
