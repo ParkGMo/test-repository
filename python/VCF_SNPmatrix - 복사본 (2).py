@@ -1,3 +1,6 @@
+# input
+import re
+
 def VCF_to_SNP_matrix(vcf_file):
     base_code_map = {
     ('A', 'T'): 'W', ('T', 'A'): 'W', # A or T
@@ -66,9 +69,6 @@ def VCF_to_SNP_matrix(vcf_file):
                 SAMPLE_dic = dict(zip(sample_List, SAMPLE_Total_raw))
                 SNP_data_Dict[sample_name][SNP_num]=SAMPLE_dic[sample_name]
         return SNP_data_Dict
-
-# input
-import re
 
 # 함수 tuple
 def SNP_matrix_delete (indel_list, select_samples_List):
@@ -212,9 +212,9 @@ def VCF_to_SNP_matrix_reverse(vcf_file, select_samples_list="", search="all"):
         for sample_key in sample_List:
             result_reverse_matrix.setdefault(SNP_key, {})
             result_reverse_matrix[SNP_key][sample_key] = result_matrix[sample_key][SNP_key]
-    print (result_reverse_matrix)
+    # print (result_reverse_matrix)
     return result_reverse_matrix    
-
+VCF_to_SNP_matrix_reverse("SNPINDELexample.vcf","SAMPLE1" ,"SNP")
 # def VCF_to_SNP_matrix_finally():
 
 

@@ -178,3 +178,92 @@ ALTER TABLE second
 --      3. 데이터 페이지에서 검색
 
 -- 효율 : 클러스터 > 보조
+
+-- 인덱스 생성
+-- CREATE [UNIQUE] INDEX 인덱스_이름
+-- ON 테이블_이름 (컬럼1, 컬럼2, ...) [ASC : DESC]
+
+-- 인덱스 삭제
+-- DROP INDEX 인덱스_이름
+-- ON 테이블_이름;
+
+-- ALTER TABLE 테이블_이름
+-- ADD CONSTRAINT
+-- UNIQUE (컬럼1, 컬럼2, ...)
+
+USE market_db;
+SELECT * FROM member;
+
+SHOW INDEX FROM member;
+
+-- index_length의 길이가 0이면 보조 인덱스가 없다.
+SHOW TABLE STATUS LIKE 'member';
+
+-- 보조 인데스 생성
+CREATE INDEX ix_member_addr
+    ON member (addr);
+
+SHOW INDEX FROM member;
+SHOW TABLE STATUS LIKE 'member'; -- > 그래도 index_length의 길이가 0이다.
+
+ANALYZE TABLE member; -- 인덱스 적용!
+
+SHOW TABLE STATUS LIKE 'member'; -- > 그래도 index_length의 길이가 변한다.
+
+-- CREATE UNIQUE INDEX ix_member_mem_number;
+CREATE INDEX ix_member_mem_number
+    ON member (mem_number); -- > 고유 인덱스로 설정할 수 없으므로  INDEX 앞 UNIQUE를 제거한다. (중복되면 안된다.)
+    
+CREATE UNIQUE INDEX ix_member_mem_name;
+-- CREATE INDEX ix_member_mem_name
+    ON member (mem_name); -- > 중복 될 수 있거나 있을 예정이면 INDEX 앞 UNIQUE를 제거 !!
+
+INSERT INTO member VALUES('MOO', '마마무', 2, '태국', '001', '12341234', 155, '2020.10.10') -- > UNIQUE로 인해 오류 발생!
+
+ANALYZE TABLE member;
+
+SHOW INDEX FROM members;
+
+
+SELECT * FROM member; -- > 인덱스 사용 X -> 모든 데이터 검색
+
+SELECT mem_id, mem_name, addr FROM member; -- 인덱스 사용 X
+
+SELECT mem_id, mem_name, addr 
+    FROM member
+    WHERE mem_name = "에이핑크"; -- 인덱스 사용 0 (WHERE절로 인해)
+
+-- ! WHERE를 사용해야 인덱스를 사용한다.
+
+CREATE INDEX idx_member_mem_number
+    ON member (mem_number);
+ANALYZE TABLE member;
+
+SELECT mem_name, mem_number
+    FROM member
+    WHERE mem_number >= 7; -- > 부분 검색일 경우 인덱스 사용
+    -- WHERE mem_number >= 1;  -- > 전체 데이터를 검색하면 인덱스 사용 X
+
+SELECT mem_name, mem_number
+    FROM member
+    WHERE mem_number*2 >= 14; -- ! > 인덱스 사용 X , WHERE의 조건을 가공한다면 인덱스 사용 X
+    WHERE mem_number >= 14/2; -- ! > 인덱스 사용 O 
+
+-- 인덱스 제거
+DROP INDEX idx_member_mem_name ON member;
+DROP INDEX idx_member_mem_addr ON member;
+DROP INDEX idx_member_mem_number ON member;
+
+ALTER TABLE member
+    DROP PRIMARY KEY; -- > PRIMARY KEY로 만들어진 인덱스 제거!
+    --  만약 오류가 난다면 FK로 인해 문제 발생 가능!
+
+SELECT table_name, constraint_name
+    FROM information_schema.referential_constraints
+    WHERE constraint_schema ='market_db';
+    --  CONSTRAINT NAME의 이름을 찾아서
+ALTER TABLE buy
+    DROP FOREIGN KEY buy_ibfk_1; -- >K로 인해 문제의 PRIMARY KEY로 만들어진 인덱스 제거!
+
+ALTER TABLE member
+    DROP PRIMARY KEY;
