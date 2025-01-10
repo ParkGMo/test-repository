@@ -1,15 +1,3 @@
-base_code_map = {
-    ('A', 'T'): 'W', ('T', 'A'): 'W', # A or T
-    ('C', 'G'): 'S', ('G', 'C'): 'S', # G or C
-    ('A', 'C'): 'M', ('C', 'A'): 'M', # A or C
-    ('G', 'T'): 'K', ('T', 'G'): 'K', # G or T
-    ('A', 'G'): 'R', ('G', 'A'): 'R', # A or G
-    ('C', 'T'): 'Y', ('T', 'C'): 'Y'  # C or T
-}
-def get_base_code(base1, base2):
-    pair = (base1, base2)
-    return base_code_map.get(pair, 'N') 
-
 def VCF_to_SNP_matrix(vcf_file):
     base_code_map = {
     ('A', 'T'): 'W', ('T', 'A'): 'W', # A or T
@@ -190,27 +178,28 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
         return SNP_Indel_Dic["else"]
     else:
         return SNP_Indel_Dic
+
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
   
-def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
+def vcf_SNP_matrix_filtering(vcf_file, select_samples_list ="", search="all"):
     # SNP_Indel search
     SNP_Indel_Dic = SNP_matrix_SNP_Indel(vcf_file, search)
     # vcf to SNP matrix delete
     result_matrix_filtered = SNP_matrix_delete(SNP_Indel_Dic, select_samples_list)
-    # SNP_Indel filtering
-    SNP_Indel_filtered = {}
-    for category, sample_dict in SNP_Indel_Dic.items():
-        for sample, SNP_dict in sample_dict.items():
-            if sample in result_matrix_filtered:
-                SNP_Indel_filtered.setdefault(category, {})
-                SNP_Indel_filtered[category][sample] = SNP_dict
-    return SNP_Indel_filtered
+    return result_matrix_filtered
+    # SNP_Indel_filtered = {}
+    # for category, sample_dict in SNP_Indel_Dic.items():
+    #     for sample, SNP_dict in sample_dict.items():
+    #         if sample in result_matrix_filtered:
+    #             SNP_Indel_filtered.setdefault(category, {})
+    #             SNP_Indel_filtered[category][sample] = SNP_dict
+    # return SNP_Indel_filtered
 
-vcf_SNP_matrix_filtering("SNPINDELexample.vcf","sample1" ,"SNP")
+vcf_SNP_matrix_filtering("SNPINDELexample.vcf","SAMPLE1" ,"SNP")
 
-def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
+def VCF_to_SNP_matrix_reverse(vcf_file, select_samples_list="", search="all"):
     result_reverse_matrix ={}
-    result_matrix = vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search)
+    result_matrix = vcf_SNP_matrix_filtering(vcf_file, select_samples_list , search)
     sample_List = []
     SNP_List = []
     SNP_keys = {}
