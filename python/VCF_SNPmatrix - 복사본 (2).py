@@ -193,12 +193,10 @@ def SNP_matrix_SNP_Indel(vcf_file, search = "all"):
 SNP_matrix_SNP_Indel("SNPINDELexample.vcf", "SNP")
   
 def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
-    # vcf to SNP matrix
-    result_matrix = VCF_to_SNP_matrix(vcf_file)
-    # vcf to SNP matrix delete
-    result_matrix_filtered = SNP_matrix_delete(vcf_file, select_samples_list)
     # SNP_Indel search
     SNP_Indel_Dic = SNP_matrix_SNP_Indel(vcf_file, search)
+    # vcf to SNP matrix delete
+    result_matrix_filtered = SNP_matrix_delete(SNP_Indel_Dic, select_samples_list)
     # SNP_Indel filtering
     SNP_Indel_filtered = {}
     for category, sample_dict in SNP_Indel_Dic.items():
@@ -207,6 +205,8 @@ def vcf_SNP_matrix_filtering(vcf_file, select_samples_list, search="all"):
                 SNP_Indel_filtered.setdefault(category, {})
                 SNP_Indel_filtered[category][sample] = SNP_dict
     return SNP_Indel_filtered
+
+vcf_SNP_matrix_filtering("SNPINDELexample.vcf","sample1" ,"SNP")
 
 def VCF_to_SNP_matrix_reverse(vcf_file,select_samples_list, search="all"):
     result_reverse_matrix ={}
