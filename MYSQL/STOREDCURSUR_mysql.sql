@@ -79,25 +79,78 @@ DROP FUNCTION IF EXISTS calcYearFunc;
 
 -- 단계별 실습
 -- 1 가장 처음으로는 초기화 진행
-DECLARE memNumber INT;
-DECLARE cnt INT DEFAULT 0;
-DECLARE totNumber INT DEFAULT 0;
+-- DECLARE memNumber INT;
+-- DECLARE cnt INT DEFAULT 0;
+-- DECLARE totNumber INT DEFAULT 0;
 
 -- 2 변수 준비
-DECLARE end0fRow BOOLEAN DEFAULT FALSE;
+-- DECLARE end0fRow BOOLEAN DEFAULT FALSE;
 
 -- 3 커서 선언하기
-DECLARE memberCursor CURSOR FOR 
-    SELECT mem_number FROM member;
+-- DECLARE memberCursor CURSOR FOR 
+--     SELECT mem_number FROM member;
 
 -- 4 반복 조건 선언
-DECLARE CONTINUE HANDLER FOR NOT FOUND SET end0fRow = TRUE;
+-- DECLARE CONTINUE HANDLER FOR NOT FOUND SET end0fRow = TRUE;
 --  > 행의 끝이 왔을 떄 end0fRow = TRUE로 하여 끝내라
 
 -- 5 CURSOR 열기
-OPEN memberCursor;
+-- OPEN memberCursor;
 
 -- 6 행 반복하기
-cursor_loop: LOOP
+-- cursor_loop: LOOP
     -- 이부분 반복
-END LOOP cursor_loop;
+-- END LOOP cursor_loop;
+
+-- LEAVE
+-- IF end0fRow THEN
+--     LEAVE cursor_loop;
+-- END IF;
+
+-- FETCH : 위 과정을 하나씩 읽어 오는 것
+-- cursor_loop: : LOOP
+--     FETCH memberCursor INTO memNumber;
+--     IF end0fRow THEN
+--         LEAVE cursor_loop;
+--     END IF;
+
+--     SET cnt = cnt + 1;
+--     SET totNumber = totNumber + memNumber;
+-- END LOOP cursor_loop;
+
+USE market_db;
+DROP PROCEDURE IF EXISTS cursor_proc;
+DELIMITER $$
+CREATE PROCEDURE cursor_proc()
+BEGIN
+    DECLARE memNumber INT; -- 회원의 인원수
+    DECLARE cnt INT DEFAULT 0; -- 읽은 행의 수
+    DECLARE totNumber INT DEFAULT 0; -- 인원의 합계
+    DECLARE endOfRow BOOLEAN DEFAULT FALSE; -- 행의 끝 여부(기본을 FALSE)
+
+    DECLARE memberCuror CURSOR FOR-- 커서 선언
+        SELECT mem_number FROM member;
+
+    DECLARE CONTINUE HANDLER -- 행의 끝이면 endOfRow 변수에 TRUE를 대입 
+        FOR NOT FOUND SET endOfRow = TRUE;
+
+    OPEN memberCuror;  -- 커서 열기
+
+    cursor_loop: LOOP
+        FETCH  memberCuror INTO memNumber; 
+
+        IF endOfRow THEN 
+            LEAVE cursor_loop;
+        END IF;
+
+        SET cnt = cnt + 1;
+        SET totNumber = totNumber + memNumber;        
+    END LOOP cursor_loop;
+
+    SELECT (totNumber/cnt) AS '회원의 평균 인원 수';
+
+    CLOSE memberCuror; 
+END $$
+DELIMITER ;
+
+CALL cursor_proc();
