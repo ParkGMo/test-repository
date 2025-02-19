@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
 
 function LogIn() {
   // return <div>LogIn</div>;
@@ -48,7 +48,7 @@ function LogIn() {
 
       {/* 로그인 폼 */}
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <input
+        {/* <Input
           type="text"
           name="identifier"
           placeholder="닉네임 또는 이메일"
@@ -72,7 +72,7 @@ function LogIn() {
           className="text-sm text-blue-500 hover:underline"
         >
           비밀번호를 잊으셨나요?
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
