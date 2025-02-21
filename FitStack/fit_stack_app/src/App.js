@@ -10,25 +10,39 @@ import Profile from "./profilePage/Profile";
 import Settings from "./settingPage/Settings";
 
 function App() {
-  // return (
-  //   <div className="App">
-  //     <h1>FitStack</h1>
-  //   </div>
-  // );
+  const notLogin = false;
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LogIn />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/workouts" element={<Workouts />} />
-        <Route path="/workouts/:id" element={<WorkoutDetail />} />
-        <Route path="/workouts/new" element={<NewWorkout />} />
-        {/* <Route path="/body-metrics" element={<BodyMetrics />} /> */}
-        {/* <Route path="/recommendations" element={<Recommendations />} /> */}
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
+        {notLogin ? (
+          <Route path="/">
+            <Route index element={<LogIn />} />
+            <Route path="register" element={<Register />} />
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route path="workouts" element={<Workouts />} />
+            <Route path="workouts/:id" element={<WorkoutDetail />} />
+            <Route path="workouts/new" element={<NewWorkout />} />
+            {/* <Route path="body-metrics" element={<BodyMetrics />} /> */}
+            {/* <Route path="recommendations" element={<Recommendations />} /> */}
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Route>
+        ) : (
+          <Route path="/">
+            <Route path="login" element={<LogIn />} />
+            <Route path="register" element={<Register />} />
+            <Route index element={<DashBoard />} />
+            <Route path="workouts" element={<Workouts />} />
+            <Route path="workouts/:id" element={<WorkoutDetail />} />
+            <Route path="workouts/new" element={<NewWorkout />} />
+            {/* <Route path="body-metrics" element={<BodyMetrics />} /> */}
+            {/* <Route path="recommendations" element={<Recommendations />} /> */}
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Route>
+        )}
       </Routes>
     </Router>
   );
