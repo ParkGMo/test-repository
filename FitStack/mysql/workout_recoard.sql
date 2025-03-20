@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Workout_Detail;
+
 CREATE TABLE Workout_Detail (
     detail_id INT AUTO_INCREMENT PRIMARY KEY,
     workout_id INT NOT NULL,

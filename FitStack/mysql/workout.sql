@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS Workout;
+
 CREATE TABLE Workout (
     workout_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
