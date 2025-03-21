@@ -1,0 +1,115 @@
+// 🎨 색상 변수
+$primary-bg: #121212; // 전체 배경 (짙은 어두운 색)
+$secondary-bg: #1e1e1e; // 박스 배경
+$accent-color: #ff5733; // 강조 색상 (예: 버튼, 타이틀 강조)
+$text-color: #e0e0e0; // 기본 글자 색 (밝은 회색)
+$title-color: #ffffff; // 타이틀 글자 색 (순백)
+$border-color: #333; // 박스 테두리
+$hover-effect: rgba(255, 255, 255, 0.1); // 클릭 시 효과
+
+// 🖋️ 폰트 설정
+$font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Roboto", sans-serif;
+
+// 🛠️ 기본 설정
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: $font-family;
+}
+
+body {
+  background-color: $primary-bg;
+  color: $text-color;
+  line-height: 1.6;
+}
+
+// 🌟 타이틀 스타일
+h1,
+h2,
+h3 {
+  font-weight: bold;
+  color: $title-color;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+// 📦 공통 박스 스타일
+.container {
+  background-color: $secondary-bg;
+  padding: 20px;
+  border-radius: 0px; // 각진 모서리
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid $border-color;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0px 3px 6px $hover-effect;
+  }
+}
+
+// 🔘 버튼 스타일
+button {
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+
+  &:hover {
+    background-color: darken($accent-color, 10%);
+  }
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: 0px 3px 6px $hover-effect;
+  }
+}
+
+// 🖊️ 입력 필드 스타일
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background-color: #222;
+  color: white;
+  border: 1px solid $border-color;
+  border-radius: 0px;
+  outline: none;
+
+  &:focus {
+    border-color: $accent-color;
+    box-shadow: 0px 0px 5px rgba(255, 87, 51, 0.5);
+  }
+}
+
+// 🔗 링크 스타일
+a {
+  color: $accent-color;
+  text-decoration: none;
+  font-weight: bold;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

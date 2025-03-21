@@ -1,95 +1,69 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
 import axios from "axios";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
+// import "./Login.scss"; // SCSS 파일 import
+import styles from "./Login.module.scss";
 
-function LogIn() {
-  // return <div>LogIn</div>;
-  const [loginData, setLoginData] = useState({
-    identifier: "", // 닉네임 또는 이메일
-    password: "",
-  });
-  const [workouts, setWorkouts] = useState([]);
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
-  };
-
-  const handleLogin = () => {
-    console.log("로그인 시도: ", loginData);
-    // 실제 로그인 API 연동 필요
-  };
-
-  useEffect(() => {
-    axios
-      // .get("http://localhost:5000/workouts")
-      .get("http://localhost:5000")
-      .then((response) => {
-        setWorkouts(response.data);
-      })
-      .catch((error) => {
-        console.error("데이터 불러오기 실패:", error);
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/login", {
+        username,
+        email,
+        password,
       });
-  }, []);
+
+      setMessage("로그인 성공!");
+      localStorage.setItem("token", response.data.token);
+    } catch (error) {
+      setMessage(
+        "로그인 실패: " + (error.response?.data?.message || "서버 오류")
+      );
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      {/* 애니메이션 타이틀 */}
-      <motion.h1
-        className="text-4xl font-bold mb-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.span
-          className="text-blue-500"
-          animate={{ rotateY: [0, 360] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          FIT
-        </motion.span>
-        -
-        <motion.span
-          className="text-green-500"
-          animate={{ rotateX: [0, 360] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          Track
-        </motion.span>
-      </motion.h1>
-
-      {/* 로그인 폼 */}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        {/* <Input
+    <div className={styles.login_container}>
+      <h1>
+        <span className={styles.fit}>FIT</span>
+        <span className={styles.track}>Track</span>
+      </h1>
+      <form onSubmit={handleLogin}>
+        <input
           type="text"
-          name="identifier"
-          placeholder="닉네임 또는 이메일"
-          value={loginData.identifier}
-          onChange={handleChange}
-          className="mb-4"
+          placeholder="닉네임"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
         />
-        <Input
+        <input
+          type="email"
+          placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
           type="password"
-          name="password"
           placeholder="비밀번호"
-          value={loginData.password}
-          onChange={handleChange}
-          className="mb-4"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
         />
-        <Button onClick={handleLogin} className="w-full mb-2">
-          로그인
-        </Button>
-        <Link
-          to="/forgot-password"
-          className="text-sm text-blue-500 hover:underline"
-        >
-          비밀번호를 잊으셨나요?
-        </Link> */}
+        <button type="submit">로그인</button>
+      </form>
+      {message && <p className={styles.message}>{message}</p>}
+      <div className={styles.links}>
+        <a href="/forgot-password">비밀번호 찾기</a>
+        <a href="/register">회원가입</a>
       </div>
     </div>
   );
-}
+};
 
-export default LogIn;
+export default Login;

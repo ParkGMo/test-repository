@@ -1,0 +1,104 @@
+// 🎨 색상 변수
+$primary-bg: #121212; // 전체 배경 (짙은 어두운 색)
+$secondary-bg: #1e1e1e; // 로그인 박스 배경
+$accent-color: #ff5733; // 강조 색상 (FIT 색상)
+$track-color: #33aaff; // TRACK 색상
+$text-color: #e0e0e0; // 기본 글자 색
+$border-color: #333; // 테두리 색상
+$input-bg: #222; // 입력 필드 배경
+$hover-effect: rgba(255, 255, 255, 0.1); // 클릭 시 효과
+
+// 🖋️ 폰트 설정
+$font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Roboto", sans-serif;
+
+.login_container {
+  background-color: $secondary-bg;
+  padding: 40px;
+  border-radius: 0px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid $border-color;
+  width: 350px;
+  text-align: center;
+  margin: 100px auto;
+
+  h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .fit {
+    color: $accent-color;
+  }
+
+  .track {
+    color: $track-color;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background-color: $input-bg;
+      color: white;
+      border: 1px solid $border-color;
+      border-radius: 0px;
+      outline: none;
+      font-size: 16px;
+
+      &:focus {
+        border-color: $accent-color;
+        box-shadow: 0px 0px 5px rgba(255, 87, 51, 0.5);
+      }
+    }
+
+    button {
+      background-color: $accent-color;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 0px;
+      transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+      margin-top: 10px;
+
+      &:hover {
+        background-color: darken($accent-color, 10%);
+      }
+
+      &:active {
+        transform: scale(0.96);
+        box-shadow: 0px 3px 6px $hover-effect;
+      }
+    }
+  }
+
+  .message {
+    margin-top: 10px;
+    font-size: 14px;
+    color: red;
+  }
+
+  .links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      color: $accent-color;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
