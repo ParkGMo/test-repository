@@ -30,7 +30,7 @@ const Login = () => {
   return (
     <div className={styles.login_container}>
       <h1>
-        <span className={styles.fit}>FIT</span>
+        <span className={styles.fit}>FIT </span>
         <span className={styles.track}>Track</span>
       </h1>
       <form onSubmit={handleLogin}>
@@ -41,13 +41,13 @@ const Login = () => {
           onChange={(e) => setUsername(e.target.value)}
           required
         />
-        <input
+        {/* <input
           type="email"
           placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-        />
+        /> */}
         <input
           type="password"
           placeholder="비밀번호"

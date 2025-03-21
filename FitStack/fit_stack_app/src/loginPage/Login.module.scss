@@ -102,3 +102,61 @@ $font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Roboto", sans-serif;
     }
   }
 }
+@media screen and (max-width: 480px) {
+  .login_container {
+    width: 90%;
+    padding: 20px;
+    margin: 50px auto;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    input {
+      font-size: 14px;
+      padding: 10px;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .links {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+}
+
+/* ✅📏 Z플립 커버 화면 (1:1 비율, 작은 정사각형 화면) */
+@media screen and (max-width: 300px) and (max-height: 300px) {
+  .login_container {
+    width: 80%;
+    padding: 15px;
+    margin: 20px auto;
+
+    h1 {
+      font-size: 20px;
+    }
+
+    input {
+      font-size: 12px;
+      padding: 8px;
+    }
+
+    button {
+      font-size: 14px;
+      padding: 8px;
+    }
+
+    .links {
+      flex-direction: column;
+      gap: 8px;
+
+      a {
+        font-size: 12px;
+      }
+    }
+  }
+}

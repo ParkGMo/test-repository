@@ -1,0 +1,129 @@
+@import "../styles/global.scss"; // 글로벌 스타일 불러오기
+
+.register_container {
+  background-color: $secondary-bg;
+  padding: 40px;
+  border-radius: 0px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid $border-color;
+  width: 350px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.fit {
+  color: $accent-color;
+}
+
+.track {
+  color: $track-color;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  background-color: $input-bg;
+  color: white;
+  border: 1px solid $border-color;
+  border-radius: 0px;
+  outline: none;
+  font-size: 16px;
+
+  &:focus {
+    border-color: $accent-color;
+    box-shadow: 0px 0px 5px rgba(255, 87, 51, 0.5);
+  }
+}
+
+button {
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+
+  &:hover {
+    background-color: darken($accent-color, 10%);
+  }
+
+  &:active {
+    transform: scale(0.96);
+    box-shadow: 0px 3px 6px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: $accent-color;
+}
+
+.links {
+  margin-top: 20px;
+
+  a {
+    color: $track-color;
+    text-decoration: none;
+    font-size: 14px;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* 📱 반응형 (갤럭시 & Z플립 커버) */
+@media screen and (max-width: 480px) {
+  .register_container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 16px;
+    padding: 10px;
+  }
+}
+
+@media screen and (max-width: 300px) and (max-height: 300px) {
+  .register_container {
+    width: 80%;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  input {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
