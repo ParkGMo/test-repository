@@ -36,6 +36,40 @@ app.get("/fit_user", (req, res) => {
   });
 });
 
+// 회원가입 API (라우터 없이 직접 정의)
+app.post("/register", async (req, res) => {
+  const { username, email, password, age, gender, height_cm, weight_kg } =
+    req.body;
+
+  try {
+    // 비밀번호 해싱
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const sql = `
+      INSERT INTO fit_user (user_id, username, email, password_hash, age, gender, height_cm, weight_kg, created_at, updated_at, deleted_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    mysql.query(
+      sql,
+      [username, email, hashedPassword, age, gender, height_cm, weight_kg],
+      (err, result) => {
+        if (err) {
+          console.error("회원가입 실패:", err);
+          return res
+            .status(500)
+            .json({ message: "회원가입 중 오류가 발생했습니다." });
+        }
+        res.status(201).json({ message: "회원가입 성공!" });
+      }
+    );
+  } catch (error) {
+    console.error("서버 오류:", error);
+    res.status(500).json({ message: "서버 오류 발생" });
+  }
+});
+
 // 서버 실행
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
