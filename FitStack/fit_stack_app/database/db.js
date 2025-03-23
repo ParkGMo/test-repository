@@ -37,9 +37,21 @@ app.get("/fit_user", (req, res) => {
 });
 
 // 회원가입 API (라우터 없이 직접 정의)
-app.post("/register", async (req, res) => {
-  const { username, email, password, age, gender, height_cm, weight_kg } =
-    req.body;
+// app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
+  const {
+    user_id,
+    username,
+    email,
+    hashedPassword,
+    age,
+    gender,
+    height_cm,
+    weight_kg,
+    created_at,
+    updated_at,
+    deleted_at,
+  } = req.body;
 
   try {
     // 비밀번호 해싱
@@ -49,11 +61,23 @@ app.post("/register", async (req, res) => {
     const sql = `
       INSERT INTO fit_user (user_id, username, email, password_hash, age, gender, height_cm, weight_kg, created_at, updated_at, deleted_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+      `;
 
     mysql.query(
       sql,
-      [username, email, hashedPassword, age, gender, height_cm, weight_kg],
+      [
+        user_id,
+        username,
+        email,
+        hashedPassword,
+        age,
+        gender,
+        height_cm,
+        weight_kg,
+        created_at,
+        updated_at,
+        deleted_at,
+      ],
       (err, result) => {
         if (err) {
           console.error("회원가입 실패:", err);
