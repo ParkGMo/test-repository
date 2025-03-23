@@ -17,4 +17,5 @@ CREATE TABLE fit_user (
 );
 
 INSERT INTO fit_user VALUES (1, '에스파', 'aespa@google.com', 30,'Female', 170, 45, '2025-03-20 16:59:00', '2025-03-20 16:59:00', '2025-03-20 16:59:00');
+INSERT INTO fit_user VALUES (2, '엔믹스', 'nmixx@google.com', 28,'Female', 268, 50, '2025-03-20 16:59:00', '2025-03-20 16:59:00', '2025-03-20 16:59:00');
  

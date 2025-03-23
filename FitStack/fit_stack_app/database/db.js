@@ -26,7 +26,7 @@ db.connect((err) => {
 
 // 유저 기록 가져오기 API
 app.get("/fit_user", (req, res) => {
-  const sql = "SELECT * FROM user";
+  const sql = "SELECT * FROM fit_user";
   db.query(sql, (err, results) => {
     if (err) {
       res.status(500).send(err);
