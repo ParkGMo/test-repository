@@ -28,14 +28,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const response = await axios.post(
-      //   "http://localhost:5000/register",
-      //   formData
-      // );
       const response = await axios.post(
-        "http://localhost:5000/api/register",
+        "http://localhost:5000/fit_user",
         formData
       );
+      // const response = await axios.post(
+      //   "http://localhost:5000/api/register",
+      //   formData
+      // );
       alert("회원가입 성공!");
     } catch (error) {
       console.error("회원가입 실패:", error);
