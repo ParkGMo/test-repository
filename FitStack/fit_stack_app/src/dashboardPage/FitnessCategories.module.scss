@@ -1,0 +1,17 @@
+@import "../styles/global.scss";
+
+.container {
+  text-align: center;
+  padding: 20px;
+
+  h1 {
+    color: $track-color;
+  }
+
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+}

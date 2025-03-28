@@ -8,6 +8,9 @@ import WorkoutDetail from "./workoutPage/WorkoutDetail";
 import NewWorkout from "./workoutPage/NewWorkout";
 import Profile from "./profilePage/Profile";
 import Settings from "./settingPage/Settings";
+import FitnessCategories from "./dashboardPage/FitnessCategories";
+import WorkOutList from "./fitnessPage/workOutListPage/WorkOutListPage";
+import FitnessPage from "./fitnessPage/FitnessPage";
 
 function App() {
   const notLogin = false;
@@ -36,6 +39,9 @@ function App() {
             <Route path="workouts" element={<Workouts />} />
             <Route path="workouts/:id" element={<WorkoutDetail />} />
             <Route path="workouts/new" element={<NewWorkout />} />
+            <Route path="fitness" element={<FitnessPage />} />
+            <Route path="fitnessCategories" element={<FitnessCategories />} />
+            <Route path="workOutList" element={<WorkOutList />} />
             {/* <Route path="body-metrics" element={<BodyMetrics />} /> */}
             {/* <Route path="recommendations" element={<Recommendations />} /> */}
             <Route path="profile" element={<Profile />} />

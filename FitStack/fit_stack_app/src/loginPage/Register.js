@@ -6,9 +6,9 @@ const now = Date.now();
 
 const Register = () => {
   const [users, setUsers] = useState([]); // 사용자 데이터를 저장할 state
-  const [userLastId, setUserLastId] = useState(0);
+  // const [userLastId, setUserLastId] = useState(0);
   const [formData, setFormData] = useState({
-    user_id: userLastId,
+    // user_id: userLastId,
     username: "",
     email: "",
     password_hash: "",
@@ -16,9 +16,9 @@ const Register = () => {
     gender: "Male",
     height_cm: "",
     weight_kg: "",
-    created_at: now,
-    updated_at: now,
-    deleted_at: now,
+    // created_at: now,
+    // updated_at: now,
+    // deleted_at: now,
   });
 
   const handleChange = (e) => {
@@ -29,36 +29,47 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/fit_user",
+        "http://localhost:5000/api/register",
         formData
       );
-      // const response = await axios.post(
-      //   "http://localhost:5000/api/register",
-      //   formData
-      // );
+      console.log("✅ 서버 응답:", response.data);
       alert("회원가입 성공!");
     } catch (error) {
-      console.error("회원가입 실패:", error);
+      console.error("❌ 회원가입 실패:", error);
       alert("회원가입 중 오류가 발생했습니다.");
     }
   };
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/fit_user") // 백엔드 API 호출
-      .then((response) => {
-        setUsers(response.data); // 가져온 데이터를 상태에 저장
-      })
-      .catch((error) => {
-        console.error("데이터 불러오기 실패:", error);
-      });
-    // 마지막 유저 아이디 가져오기
-    if (users.length == 0) {
-      console.log(users);
-    } else {
-      setUserLastId(users[users.length - 1].user_id);
-    }
-  }, [userLastId]);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:5000/api/register",
+  //       formData
+  //     );
+  //     alert("회원가입 성공!");
+  //   } catch (error) {
+  //     console.error("회원가입 실패:", error);
+  //     alert("회원가입 중 오류가 발생했습니다.");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:5000/fit_user") // 백엔드 API 호출
+  //     .then((response) => {
+  //       setUsers(response.data); // 가져온 데이터를 상태에 저장
+  //     })
+  //     .catch((error) => {
+  //       console.error("데이터 불러오기 실패:", error);
+  //     });
+  //   // 마지막 유저 아이디 가져오기
+  //   if (users.length == 0) {
+  //     console.log(users);
+  //   } else {
+  //     setUserLastId(users[users.length - 1].user_id);
+  //   }
+  // }, [userLastId]);
 
   return (
     <div className={styles.userForm}>

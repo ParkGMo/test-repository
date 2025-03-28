@@ -4,7 +4,15 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(cors()); // CORS 허용
+// app.use(cors()); // CORS 허용
+app.use(
+  cors({
+    origin: "http://localhost:3000", // 리액트 주소
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+app.use(express.urlencoded({ extended: true })); // URL 인코딩된 데이터 파싱
 app.use(express.json()); // JSON 요청 처리
 
 // MySQL 연결 설정
@@ -36,85 +44,66 @@ app.get("/fit_user", (req, res) => {
   });
 });
 
-// 회원가입 API (라우터 없이 직접 정의)
-// app.post("/api/register", async (req, res) => {
-//   const {
-//     user_id,
-//     username,
-//     email,
-//     hashedPassword,
-//     age,
-//     gender,
-//     height_cm,
-//     weight_kg,
-//     created_at,
-//     updated_at,
-//     deleted_at,
-//   } = req.body;
+app.post("/api/register", async (req, res) => {
+  try {
+    const { username, email, password, age, gender, height_cm, weight_kg } =
+      req.body;
 
-//   try {
-//     // 비밀번호 해싱
-//     const saltRounds = 10;
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//     const sql = `
-//       INSERT INTO fit_user (user_id, username, email, password_hash, age, gender, height_cm, weight_kg, created_at, updated_at, deleted_at)
-//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//       `;
-
-//     mysql.query(
-//       sql,
-//       [
-//         user_id,
-//         username,
-//         email,
-//         hashedPassword,
-//         age,
-//         gender,
-//         height_cm,
-//         weight_kg,
-//         created_at,
-//         updated_at,
-//         deleted_at,
-//       ],
-//       (err, result) => {
-//         if (err) {
-//           console.error("회원가입 실패:", err);
-//           return res
-//             .status(500)
-//             .json({ message: "회원가입 중 오류가 발생했습니다." });
-//         }
-//         res.status(201).json({ message: "회원가입 성공!" });
-//       }
-//     );
-//   } catch (error) {
-//     console.error("서버 오류:", error);
-//     res.status(500).json({ message: "서버 오류 발생" });
-//   }
-// });
-
-app.post("/fit_user", (req, res) => {
-  const { username, email, password, age, gender, height_cm, weight_kg } =
-    req.body;
-
-  // 비밀번호 해시 (saltRounds = 10)
-  bcrypt.hash(password, 10, (err, hash) => {
-    if (err) {
-      return res.status(500).json({ error: "비밀번호 해싱 실패" });
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: "필수 입력값이 없습니다." });
     }
 
-    // MySQL에 저장
+    // 비밀번호 해싱
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // SQL 쿼리 실행
     const sql = `INSERT INTO fit_user (username, email, password_hash, age, gender, height_cm, weight_kg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    const values = [username, email, hash, age, gender, height_cm, weight_kg];
+    const values = [
+      username,
+      email,
+      hashedPassword,
+      age || null,
+      gender || null,
+      height_cm || null,
+      weight_kg || null,
+    ];
 
     db.query(sql, values, (err, result) => {
       if (err) {
+        console.error("회원가입 오류:", err);
         return res.status(500).json({ error: "회원가입 실패" });
       }
       res.json({ message: "회원가입 성공!" });
     });
-  });
+  } catch (error) {
+    console.error("회원가입 오류:", error);
+    res.status(500).json({ error: "서버 오류" });
+  }
 });
+
+// app.post("/fit_user", (req, res) => {
+//   const { username, email, password, age, gender, height_cm, weight_kg } =
+//     req.body;
+
+//   // 비밀번호 해시 (saltRounds = 10)
+//   bcrypt.hash(password, 10, (err, hash) => {
+//     if (err) {
+//       return res.status(500).json({ error: "비밀번호 해싱 실패" });
+//     }
+
+//     // MySQL에 저장
+//     const sql = `INSERT INTO fit_user (username, email, password_hash, age, gender, height_cm, weight_kg) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+//     const values = [username, email, hash, age, gender, height_cm, weight_kg];
+
+//     db.query(sql, values, (err, result) => {
+//       if (err) {
+//         return res.status(500).json({ error: "회원가입 실패" });
+//       }
+//       res.json({ message: "회원가입 성공!" });
+//     });
+//   });
+// });
 
 // 서버 실행
 const PORT = process.env.PORT || 5000;
